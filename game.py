@@ -1,5 +1,6 @@
 from board import *
 from time import time
+from random import randint
 
 #Initialize Game
 position = [
@@ -21,12 +22,15 @@ def playerMove():
         if (currentBoard.position[len(currentBoard.position) - 1 - x][y] == ' '):
             position = (len(currentBoard.position) - 1 - x,y)
             break
+        else:
+            position = (len(currentBoard.position) - 1,y)
+        
     currentBoard.insertLetter(player, position)
     return
 
 def compMove():
     bestScore = -800
-    bestMove = (-1,-1)
+    bestMoves = []
     for y in range(len(currentBoard.position[0])):
         for x in range(len(currentBoard.position)):
             if (currentBoard.position[len(currentBoard.position) - 1 - x][y] == ' '):
@@ -35,28 +39,32 @@ def compMove():
                 currentBoard.position[len(currentBoard.position) - 1 - x][y] = ' '
                 if (score > bestScore):
                     bestScore = score
-                    bestMove = (len(currentBoard.position) - 1 - x,y)
+                    bestMoves = []
+                    bestMoves.append((len(currentBoard.position) - 1 - x,y))
+                elif (score == bestScore):
+                    bestMoves.append((len(currentBoard.position) - 1 - x,y))
                 break #break out of column
 
+    bestMove = bestMoves[randint(0,len(bestMoves)-1)]
+    print("Best Moves Yielded: " + str(score) + " Points")
     currentBoard.insertLetter(bot, bestMove)
     return
-
 
 def minimax(board, depth, isMaximizing):
 
     if (board.checkWhichMarkWon(bot)):
-        return 100
+        return 500 - depth
     elif (board.checkWhichMarkWon(player)):
-        return -100
+        return -500 + depth
     elif (board.checkForDraw()):
         return 0
 
     elif depth == 4:
         score = board.getScore()
-        if isMaximizing:
-            return score
-        else:
+        if isMaximizing: #player just moved
             return -score
+        else: #comp just moved
+            return score
 
     if (isMaximizing):
         bestScore = -800
@@ -88,6 +96,7 @@ while not currentBoard.checkForWin():
     starttime = time()
     compMove()
     print("Computer Move Time: " + str(time()-starttime) + " seconds")
+    
     playerMove()
 
     

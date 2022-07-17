@@ -82,26 +82,68 @@ class Board():
 
     def getScore(self):
 
-        CompScore = 0
-        HumanScore = 0
+        score = 0
+
         #Sum two in row
         #check across
         for row in self.position:
-            for i in range(6):
-                if row[0+i] == row[1+i] and row[0+i] == "X":
-                    CompScore += 2;
-                if row[0+i] == row[1+i] and row[0+i] == "O":
-                    HumanScore += 2;
+            for i in range(4):
+                if row[0+i] != "O" and row[1+i] != "O" and row[2+i] != "O" and row[3+i] != "O": #Possible way to win for X
+                    NumberInARow = 0
+                    if row[0+i] == "X": NumberInARow += 1
+                    if row[1+i] == "X": NumberInARow += 1
+                    if row[2+i] == "X": NumberInARow += 1
+                    if row[3+i] == "X": NumberInARow += 1
+                    score += NumberInARow * NumberInARow
+
+                if row[0+i] != "X" and row[1+i] != "X" and row[2+i] != "X" and row[3+i] != "X": #Possible way to win for O
+                    NumberInARow = 0
+                    if row[0+i] == "O": NumberInARow += 1
+                    if row[1+i] == "O": NumberInARow += 1
+                    if row[2+i] == "O": NumberInARow += 1
+                    if row[3+i] == "O": NumberInARow += 1
+                    score -= NumberInARow * NumberInARow
 
         #check verical
         for i in range(len(self.position[0])):
-            for j in range(5):
-                if self.position[0+j][i] == self.position[1+j][i] and self.position[0+j][i] == "X":
-                    CompScore += 2;
-                if self.position[0+j][i] == self.position[1+j][i] and self.position[0+j][i] == "O":
-                    HumanScore += 2;
-        
-        return HumanScore - CompScore
+            for j in range(3):
+                if self.position[0+j][i] != "O" and self.position[1+j][i] != "O" and self.position[2+j][i] != "O" and self.position[3+j][i] != "O":
+                    NumberInARow = 0
+                    if self.position[0+j][i] == "X": NumberInARow += 1
+                    if self.position[1+j][i] == "X": NumberInARow += 1
+                    if self.position[2+j][i] == "X": NumberInARow += 1
+                    if self.position[3+j][i] == "X": NumberInARow += 1
+                    score += NumberInARow * NumberInARow
+                if self.position[0+j][i] != "X" and self.position[1+j][i] != "X" and self.position[2+j][i] != "X" and self.position[3+j][i] != "X":
+                    NumberInARow = 0
+                    if self.position[0+j][i] == "O": NumberInARow += 1
+                    if self.position[1+j][i] == "O": NumberInARow += 1
+                    if self.position[2+j][i] == "O": NumberInARow += 1
+                    if self.position[3+j][i] == "O": NumberInARow += 1
+                    score -= NumberInARow * NumberInARow
+
+        #check down diagonal
+        for i in range(len(self.position[0])-3): #col
+            for j in range(len(self.position)-3): #row
+                if self.position[0+j][0+i] != "O" and self.position[1+j][1+i] != "O" and self.position[2+j][2+i] != "O" and self.position[3+j][3+i] != "O":
+                    NumberInARow = 0
+                    if self.position[0+j][0+i] == "X": NumberInARow += 1
+                    if self.position[1+j][1+i] == "X": NumberInARow += 1
+                    if self.position[2+j][2+i] == "X": NumberInARow += 1
+                    if self.position[3+j][3+i] == "X": NumberInARow += 1
+                    score += NumberInARow * NumberInARow
+
+        #check up diagonal
+        for i in range(len(self.position[0])-3): #col
+            for j in range(len(self.position)-3): #row
+                if self.position[5-j][0+i] != "X" and self.position[4-j][1+i] != "X" and self.position[3-j][2+i] != "X" and self.position[2-j][3+i] != "X":
+                    NumberInARow = 0
+                    if self.position[5-j][0+i] == "O": NumberInARow += 1
+                    if self.position[4-j][1+i] == "O": NumberInARow += 1
+                    if self.position[3+j][2+i] == "O": NumberInARow += 1
+                    if self.position[2+j][3+i] == "O": NumberInARow += 1
+                    score -= NumberInARow * NumberInARow
+        return score
 
             
     def spaceIsFree(self,x,y):
